@@ -1,0 +1,4 @@
+<launch>
+	<node pkg="0_controls" type="controls.py" name="controls" output="screen"/>
+	<node pkg="0_controls" type="moving_box.py" name="WorldNode" output="screen"/>
+</launch>

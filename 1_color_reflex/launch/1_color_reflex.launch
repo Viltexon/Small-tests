@@ -1,0 +1,4 @@
+<launch>
+	<node pkg="1_color_reflex" type="color_reflex.py" name="color_reflex" output="screen"/>
+	<node pkg="1_color_reflex" type="moving_box.py" name="WorldNode" output="screen"/>
+</launch>
