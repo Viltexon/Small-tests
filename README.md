@@ -1,2 +1,2 @@
 # Small-tests
-Examples for Pygame with ROS topics
+Just learning some basic ROS concepts

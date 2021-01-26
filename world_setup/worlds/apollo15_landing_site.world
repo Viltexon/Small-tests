@@ -1,32 +1,31 @@
 <?xml version="1.0" ?>
 <sdf version="1.4">
   <world name="default">
+
     <!-- Gravity -->
     <physics type="ode">
-      <gravity>0 0 -1.625</gravity> <!-- 16.6% that on Earth's surface -->
+      <gravity>0 0 -1.625</gravity>
+      <!-- 16.6% that on Earth's surface -->
     </physics>
+
     <!-- A hightmap plane -->
     <include>
-	<!-- TODO .gazebo cache bug -->
-	<uri>/home/vb/ROS/main/catkin_main/src/world_setup/models/apollo15_landing_site</uri>
-<!--
-	<uri>model://ground_plane</uri> 
-	<uri>model://apollo15_landing_site</uri>  
--->
+      <!-- TODO .gazebo cache bug -->
+      <!-- <uri>model://apollo15_landing_site</uri> -->
+      <uri>/home/vb/ROS/main/catkin_main/src/world_setup/models/apollo15_landing_site</uri>
+      <!-- <uri>model://ground_plane</uri> -->
     </include>
+
 
     <!-- new tests -->
-
     <include>
-	<!-- TODO .gazebo cache bug -->
-	<uri>/home/vb/ROS/main/catkin_main/src/world_setup/models/simple_model</uri>
-	<static>false</static>
-	<pose>0 0 5 0 0 0</pose>
+      <!-- TODO .gazebo cache bug -->
+      <!-- <uri>model://simple_model</uri>-->
+      <uri>/home/vb/ROS/main/catkin_main/src/world_setup/models/simple_model</uri>
+      <static>false</static>
+      <pose>0 0 5 0 0 0</pose>
     </include>
 
-<!--
-	<uri>model://simple_model</uri> 
--->
 
     <!-- Starry sky -->
     <scene>
@@ -43,7 +42,7 @@
       </sky>
       <shadows>1</shadows>
     </scene>
-    <light name='sun1' type="directional" >
+    <light name="sun1" type="directional">
       <cast_shadows>1</cast_shadows>
       <pose>0 0 10 0 0 0</pose>
       <diffuse>0.9 0.9 0.9 1</diffuse>
@@ -54,7 +53,7 @@
       </attenuation>
       <direction>-1.0 1.0 -1.0</direction>
     </light>
-    <light name='sun2' type="directional" >
+    <light name="sun2" type="directional">
       <cast_shadows>1</cast_shadows>
       <pose>1 0 10 0 0 0</pose>
       <diffuse>0.9 0.9 0.9 1</diffuse>
@@ -65,7 +64,7 @@
       </attenuation>
       <direction>-1.0 1.0 -1.0</direction>
     </light>
-    <light name='sun3' type="directional" >
+    <light name="sun3" type="directional">
       <cast_shadows>1</cast_shadows>
       <pose>0 1 10 0 0 0</pose>
       <diffuse>0.9 0.9 0.9 1</diffuse>
@@ -76,7 +75,7 @@
       </attenuation>
       <direction>-1.0 1.0 -1.0</direction>
     </light>
-    <light name='sun4' type="directional" >
+    <light name="sun4" type="directional">
       <cast_shadows>1</cast_shadows>
       <pose>1 1 10 0 0 0</pose>
       <diffuse>0.9 0.9 0.9 1</diffuse>
@@ -87,10 +86,11 @@
       </attenuation>
       <direction>-1.0 1.0 -1.0</direction>
     </light>
-    <!-- <gui> -->
-    <!--  <camera name="camera_world_main"> -->
-    <!--    <pose>57 15 1 0 0.05 1.4</pose> -->
-    <!--  </camera> -->
-    <!-- </gui> -->
+    <!-- <gui>-->
+    <!--  <camera name="camera_world_main">-->
+    <!--    <pose>57 15 1 0 0.05 1.4</pose>-->
+    <!--  </camera>-->
+    <!-- </gui>-->
+
   </world>
 </sdf>
