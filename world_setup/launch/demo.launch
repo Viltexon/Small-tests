@@ -14,4 +14,19 @@
     <arg name="world_name" default="$(arg world_name)"/>
   </include>
 
+  <!-- robot -->
+
+  <param name="robot_description" command="$(find xacro)/xacro.py --inorder '$(find world_setup)/urdf/robot.urdf'" />
+  
+  <arg name="x" default="0"/>
+  <arg name="y" default="2"/>
+  <arg name="z" default="1.5"/>
+
+  <node name="my_robot_spawn" pkg="gazebo_ros" type="spawn_model" output="screen"
+          args="-urdf -param robot_description -model my_robot -x $(arg x) -y $(arg y) -z $(arg z)" />
+
+
+  <!-- TODO python path -->        
+  <!-- <node pkg="world_setup" type="camera_test.py" name="listener" output="screen"/> -->
+
 </launch>
