@@ -26,7 +26,7 @@
           args="-urdf -param robot_description -model my_robot -x $(arg x) -y $(arg y) -z $(arg z)" />
 
 
-  <!-- TODO python path -->        
-  <!-- <node pkg="world_setup" type="camera_test.py" name="listener" output="screen"/> -->
+  <!-- TODO cv_bridge error -->        
+  <node pkg="world_setup" type="camera_test.py" name="listener" output="screen"/>
 
 </launch>
