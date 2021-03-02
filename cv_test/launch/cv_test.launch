@@ -1,0 +1,4 @@
+<launch>
+	<node pkg="cv_test" type="cv_test_pub.py" name="cv_test_pub" output="screen"/>
+	<node pkg="cv_test" type="cv_test_get.py" name="cv_test_get" output="screen"/>
+</launch>
