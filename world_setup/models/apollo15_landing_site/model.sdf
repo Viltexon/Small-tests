@@ -36,7 +36,7 @@
             <texture>
               <!-- TODO .gazebo cache bug -->
               <!-- <diffuse>file://apollo15_landing_site/materials/textures/AS16-110-18026HR-512x512.jpg</diffuse> -->
-              <diffuse>/home/vb/ROS/main/catkin_main/src/world_setup/models/apollo15_landing_site/materials/textures/art.jpg</diffuse>
+              <diffuse>/home/pigeon/ROS/MainWS/current/src/world_setup/models/apollo15_landing_site/materials/textures/art.jpg</diffuse>
               <!-- <diffuse>file://media/materials/textures/grass_diffusespecular.png</diffuse> -->
               <normal>file://media/materials/textures/flat_normal.png</normal>
               <size>2</size>

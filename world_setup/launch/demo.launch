@@ -16,7 +16,7 @@
 
   <!-- robot -->
 
-  <param name="robot_description" command="$(find xacro)/xacro.py --inorder '$(find world_setup)/urdf/robot.urdf'" />
+  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find world_setup)/urdf/robot.urdf'" />
   
   <arg name="x" default="0"/>
   <arg name="y" default="2"/>

@@ -12,7 +12,7 @@
     <include>
       <!-- TODO .gazebo cache bug -->
       <!-- <uri>model://apollo15_landing_site</uri> -->
-      <uri>/home/vb/ROS/main/catkin_main/src/world_setup/models/apollo15_landing_site</uri>
+      <uri>/home/pigeon/ROS/MainWS/current/src/world_setup/models/apollo15_landing_site</uri>
       <!-- <uri>model://ground_plane</uri> -->
     </include>
 
@@ -21,7 +21,7 @@
     <include>
       <!-- TODO .gazebo cache bug -->
       <!-- <uri>model://simple_model</uri>-->
-      <uri>/home/vb/ROS/main/catkin_main/src/world_setup/models/simple_model</uri>
+      <uri>/home/pigeon/ROS/MainWS/current/src/world_setup/models/simple_model</uri>
       <static>false</static>
       <pose>0 0 5 0 0 0</pose>
     </include>
