@@ -10,20 +10,16 @@
 
     <!-- A hightmap plane -->
     <include>
-      <!-- TODO .gazebo cache bug -->
-      <!-- <uri>model://apollo15_landing_site</uri> -->
-      <uri>/home/pigeon/ROS/MainWS/current/src/world_setup/models/apollo15_landing_site</uri>
+      <uri>model://apollo15_landing_site</uri>
       <!-- <uri>model://ground_plane</uri> -->
     </include>
 
 
     <!-- new tests -->
     <include>
-      <!-- TODO .gazebo cache bug -->
-      <!-- <uri>model://simple_model</uri>-->
-      <uri>/home/pigeon/ROS/MainWS/current/src/world_setup/models/simple_model</uri>
+       <uri>model://simple_model</uri>
       <static>false</static>
-      <pose>0 0 5 0 0 0</pose>
+      <pose>10 0 5 0 0 0</pose>
     </include>
 
 
