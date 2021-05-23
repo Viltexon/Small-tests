@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<sdf version="1.4">
+  <world name="default">
+
+
+    <!-- A hightmap plane -->
+    <include>
+      <uri>model://map1</uri> 
+    </include>
+
+    <light name="sun" type="directional">
+      <cast_shadows>1</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>0.9 0.9 0.9 1</diffuse>
+      <specular>0.0 0.0 0.0 1</specular>
+      <attenuation>
+        <range>100</range>
+        <constant>1</constant>
+      </attenuation>
+      <direction>-1.0 1.0 -1.0</direction>
+    </light>
+
+  </world>
+</sdf>
