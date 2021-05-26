@@ -17,26 +17,38 @@
 
 
   <!-- Run the map server -->
-  <arg name="map_file" default="$(find test_world)/models/map1/materials/map1.yaml"/>
+  <arg name="map_file" default="$(find test_world)/models/map1/materials/map2.yaml"/>
 
   <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
 
 
   <!-- robot -->
 
-  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find test_world)/urdf/robot.urdf'" />
+  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find test_world)/urdf/robot1/robot.urdf'" />
   
-  <arg name="x" default="-4"/>
-  <arg name="y" default="5"/>
+  <arg name="x" default="10"/>
+  <arg name="y" default="-13"/>
   <arg name="z" default="1.5"/>
+  <arg name="yaw" default="-3"/>
 
   <node name="my_robot_spawn" pkg="gazebo_ros" type="spawn_model" output="screen"
-          args="-urdf -param robot_description -model my_robot -x $(arg x) -y $(arg y) -z $(arg z)" />
+          args="-urdf -param robot_description -model my_robot -x $(arg x) -y $(arg y) -z $(arg z) -Y $(arg yaw)" />
 
+<!-- robot2 -->
 
+  <param name="robot_description_2" command="$(find xacro)/xacro --inorder '$(find test_world)/urdf/robot2/robot.urdf'" />
+  
+  <arg name="x2" default="0"/>
+  <arg name="y2" default="0"/>
+  <arg name="z2" default="1.5"/>
+  <arg name="yaw2" default="0.5"/>
 
-  <node pkg="test_world" type="reading_laser.py" name="listener" output="screen"/>
+  <node name="my_robot_spawn2" pkg="gazebo_ros" type="spawn_model" output="screen"
+          args="-urdf -param robot_description_2 -model my_robot_2 -x $(arg x2) -y $(arg y2) -z $(arg z2) -Y $(arg yaw2)" />
 
+  <!-- <node pkg="test_world" type="reading_laser.py" name="listener" output="screen"/> -->
+  <node pkg="test_world" type="mover.py" name="mover" output="screen"/>
+  <node pkg="test_world" type="mover2.py" name="mover2" output="screen"/>
 
 
 </launch>

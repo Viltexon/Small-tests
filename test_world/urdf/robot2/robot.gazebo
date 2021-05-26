@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <robot>
 
-  <gazebo reference="link_chassis">
+  <gazebo reference="link_chassis2">
     <material>Gazebo/DarkGrey</material>
   </gazebo>
   <gazebo reference="link_left_wheel">
@@ -13,7 +13,6 @@
 
   <gazebo>
     <plugin filename="libgazebo_ros_diff_drive.so" name="differential_drive_controller">
-      <legacyMode>false</legacyMode>
       <alwaysOn>true</alwaysOn>
       <updateRate>20</updateRate>
       <leftJoint>joint_left_wheel</leftJoint>
@@ -21,10 +20,10 @@
       <wheelSeparation>0.2</wheelSeparation>
       <wheelDiameter>0.2</wheelDiameter>
       <torque>0.1</torque>
-      <commandTopic>cmd_vel</commandTopic>
-      <odometryTopic>odom</odometryTopic>
-      <odometryFrame>odom</odometryFrame>
-      <robotBaseFrame>link_chassis</robotBaseFrame>
+      <commandTopic>cmd_vel2</commandTopic>
+      <odometryTopic>odom2</odometryTopic>
+      <odometryFrame>odom2</odometryFrame>
+      <robotBaseFrame>link_chassis2</robotBaseFrame>
     </plugin>
   </gazebo>
 
@@ -55,8 +54,8 @@
         </noise>
       </ray>
       <plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_laser.so">
-        <topicName>/robot/laser/scan</topicName>
-        <frameName>sensor_laser</frameName>
+        <topicName>/robot2/laser/scan</topicName>
+        <frameName>sensor_laser2</frameName>
       </plugin>
     </sensor>
   </gazebo>
