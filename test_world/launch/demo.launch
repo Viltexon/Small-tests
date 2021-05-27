@@ -50,5 +50,8 @@
   <node pkg="test_world" type="mover.py" name="mover" output="screen"/>
   <node pkg="test_world" type="mover2.py" name="mover2" output="screen"/>
 
+  
+  <!-- Start service server that responds with a plan for global path planning -->
+  <node pkg="test_world" name="path_plan_server" type="PathServer.py" output="screen"/> 
 
 </launch>
