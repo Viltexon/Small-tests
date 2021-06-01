@@ -3,18 +3,46 @@
 import rospy
 from test_world.srv import *
 from geometry_msgs.msg import Point
+from A_star import *
+
+
+def tr_x_to(x, dist):
+	return int(round(x + dist/2 - 0.5))
+
+def tr_y_to(y, dist):
+	return int(round(-y + dist/2 - 0.5))
+
+def tr_x_from(x, dist):
+	return x - dist/2 + 0.5
+
+def tr_y_from(y, dist):
+	return -y + dist/2 - 0.5
+
 
 def handle_path_plan(req):
 
-	# costmap as 1-D array representation
-	costmap = req.costmap_ros
-	# number of columns in the occupancy grid
-	width = req.width
-	# number of rows in the occupancy grid
-	height = req.height
-	# start and goal points
-	start_point = req.start
-	goal_point = req.goal
+	rospy.loginfo("handle_path_plan +++++++++++++++++")
+	map_matr_tmp = [req.costmap_ros[i:i+req.width] for i in range(0, len(req.costmap_ros), req.width)]
+	map_matr = []
+	for i in range(len(map_matr_tmp)):
+		map_matr.append(map_matr_tmp.pop())
+
+	rospy.loginfo(map_matr)
+
+	start_index = []
+	start_index.append(tr_x_to(req.start.x, req.width))
+	start_index.append(tr_y_to(req.start.y, req.height)) 
+	
+	rospy.loginfo(start_index)
+
+
+	goal_index = []
+	goal_index.append(tr_x_to(req.goal.x, req.width)) 
+	goal_index.append(tr_y_to(req.goal.y, req.height)) 
+	
+	rospy.loginfo(goal_index)
+	rospy.loginfo("handle_path_plan +++++++++++++++++")
+
 
 	# side of each grid map square in meters
 	resolution = 1
@@ -24,26 +52,34 @@ def handle_path_plan(req):
 	# time statistics
 	start_time = rospy.Time.now()
 
-	# calculate the shortes path using Dijkstra, A*
-	# how TODO LRA* and WHCA*
-	# goal to index?
-	# path = dijkstra(start_index, goal_index, width, height, costmap, resolution, origin, viz)
+	# how TODO LRA* and WHCA* ?
+	tmp_path = A_star(map_matr, start_index, goal_index, resolution)
 
-
-	# tmp response
+	goal_point = req.goal
 	path = []
-
 	path.append(goal_point)
-	tmp_desired_position = Point()
-	tmp_desired_position.x = 10
-	tmp_desired_position.y = 12
-	tmp_desired_position.z = 0
-	path.append(tmp_desired_position)
-	tmp_desired_position = Point()
-	tmp_desired_position.x = -10
-	tmp_desired_position.y = -3
-	tmp_desired_position.z = 0
-	path.append(tmp_desired_position)
+
+	for p_point in tmp_path:
+		tmp_desired_position = Point()
+		tmp_desired_position.x = tr_x_from(p_point[0], req.width)
+		tmp_desired_position.y = tr_y_from(p_point[1], req.height)
+		tmp_desired_position.z = 0
+		path.append(tmp_desired_position)
+
+
+	# path = []
+	# path.append(goal_point)
+	# tmp_desired_position = Point()
+	# tmp_desired_position.x = 7
+	# tmp_desired_position.y = 10
+	# tmp_desired_position.z = 0
+	# path.append(tmp_desired_position)
+	# tmp_desired_position = Point()
+	# tmp_desired_position.x = -7
+	# tmp_desired_position.y = -3
+	# tmp_desired_position.z = 0
+	# path.append(tmp_desired_position)
+
 
 
 

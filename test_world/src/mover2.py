@@ -5,31 +5,26 @@ from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import Twist, Point
 from nav_msgs.msg import Odometry
 from tf import transformations
+from nav_msgs.msg import OccupancyGrid
 
 import math
 
-# robot state variables
+from test_world.srv import *
+
+
+
 position_ = Point()
+position_.z = 4
+
+desired_position_ = Point()
 yaw_ = 0
 # machine state
 state_ = 0
-# goal
 
 desired_path = []
 
-tmp_desired_position = Point()
-tmp_desired_position.x = 10
-tmp_desired_position.y = 16
-tmp_desired_position.z = 0
-desired_path.append(tmp_desired_position)
-tmp_desired_position = Point()
-tmp_desired_position.x = 10
-tmp_desired_position.y = 12
-tmp_desired_position.z = 0
-desired_path.append(tmp_desired_position)
-
-
-desired_position_ = desired_path.pop()
+# map data
+map_data = []
 
 # parameters
 yaw_precision_ = math.pi / 180 # +/- 1 degree allowed
@@ -52,6 +47,8 @@ def fix_yaw(des_pos):
 
 	if err_yaw < -math.pi:
 		err_yaw = err_yaw + 2*math.pi
+	
+	# rospy.loginfo(err_yaw)
 
 	twist_msg = Twist()
 	if math.fabs(err_yaw) > yaw_precision_:
@@ -69,7 +66,7 @@ def fix_yaw(des_pos):
 
 
 def go_straight_ahead(des_pos):
-	global yaw_, pub, yaw_precision_, state_, desired_position_
+	global yaw_, pub, yaw_precision_, state_, desired_position_, desired_path
 	desired_yaw = math.atan2(des_pos.y - position_.y, des_pos.x - position_.x)
 	err_yaw = desired_yaw - yaw_
 	err_pos = math.sqrt(pow(des_pos.y - position_.y, 2) + pow(des_pos.x - position_.x, 2))
@@ -88,7 +85,7 @@ def go_straight_ahead(des_pos):
 			change_state(2)
 
 	# state change conditions
-	if math.fabs(err_yaw) > yaw_precision_*10:
+	if math.fabs(err_yaw) > yaw_precision_*20:
 		# rospy.loginfo('Yaw error: [%s]' % err_yaw)
 		change_state(0)
 
@@ -124,17 +121,64 @@ def clbk_odom(msg):
 	yaw_ = euler[2]
 
 
+def get_tr_position():
+	tmp_point = Point()
+	tmp_point.x = position_.x 		
+	tmp_point.y = position_.y
+	tmp_point.z = 0
+
+	return tmp_point
+
+
+def callback_map(msg):
+	global map_data
+	map_data = msg.data
+
+
 
 def main():
-	global pub
+	global pub, desired_path, desired_position_
 
 	rospy.init_node('mover2')
 
 	pub = rospy.Publisher('/cmd_vel2', Twist, queue_size=1)
 
 	sub_odom = rospy.Subscriber('/odom2', Odometry, clbk_odom)
-
+	sub_map = rospy.Subscriber("/map", OccupancyGrid, callback_map)
 	rate = rospy.Rate(20)
+
+
+	while not map_data or position_.z==4:
+		# rospy.loginfo('kk')
+		rate.sleep()
+
+
+	pp_request = PathPlanRequest()
+
+
+	pp_request.start = get_tr_position()
+
+	goal_point = Point()
+	goal_point.x = 4.5
+	goal_point.y = 9.5
+	goal_point.z = 0
+	pp_request.goal = goal_point
+
+	pp_request.costmap_ros = map_data
+	pp_request.width = 32
+	pp_request.height = 32
+
+	rospy.wait_for_service('path_plan')
+	try:
+		path_plan = rospy.ServiceProxy('path_plan', PathPlan)
+		resp = path_plan(pp_request)
+		desired_path = resp.plan	
+		rospy.loginfo(desired_path)
+		desired_position_ = desired_path.pop()
+		rospy.loginfo(desired_position_)
+	except rospy.ServiceException as e:
+		print("Service call failed: %s"%e)
+
 	while not rospy.is_shutdown():
 		if state_ == 0:
 			tmp_yaw = yaw_

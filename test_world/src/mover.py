@@ -14,6 +14,8 @@ from test_world.srv import *
 
 # robot state variables
 position_ = Point()
+position_.z = 4
+
 desired_position_ = Point()
 yaw_ = 0
 # machine state
@@ -21,23 +23,6 @@ state_ = 0
 # goal
 
 desired_path = []
-
-# tmp_desired_position = Point()
-# tmp_desired_position.x = -16
-# tmp_desired_position.y = 16
-# tmp_desired_position.z = 0
-# desired_path.append(tmp_desired_position)
-# tmp_desired_position = Point()
-# tmp_desired_position.x = 10
-# tmp_desired_position.y = 12
-# tmp_desired_position.z = 0
-# desired_path.append(tmp_desired_position)
-# tmp_desired_position = Point()
-# tmp_desired_position.x = -10
-# tmp_desired_position.y = -3
-# tmp_desired_position.z = 0
-# desired_path.append(tmp_desired_position)
-
 
 # map data
 map_data = []
@@ -58,9 +43,6 @@ def fix_yaw(des_pos):
 
 	err_yaw = desired_yaw - yaw_
 
-	# rospy.loginfo("eee")
-	# rospy.loginfo(desired_yaw)
-	# rospy.loginfo(yaw_)
 	if err_yaw > math.pi:
 		err_yaw = err_yaw - 2*math.pi
 
@@ -104,7 +86,7 @@ def go_straight_ahead(des_pos):
 			change_state(2)
 
 	# state change conditions
-	if math.fabs(err_yaw) > yaw_precision_*10:
+	if math.fabs(err_yaw) > yaw_precision_*10:	# main TODO bruh moment
 		# rospy.loginfo('Yaw error: [%s]' % err_yaw)
 		change_state(0)
 
@@ -140,7 +122,6 @@ def clbk_odom(msg):
 	yaw_ = euler[2]
 
 
-# to int here or to index on server?
 def get_tr_position():
 	tmp_point = Point()
 	tmp_point.x = position_.x 		
@@ -154,7 +135,6 @@ def callback_map(msg):
 	global map_data
 	map_data = msg.data
 
-	#map size TODO
 
 
 
@@ -167,6 +147,13 @@ def main():
 
 	sub_odom = rospy.Subscriber('/odom', Odometry, clbk_odom)
 	sub_map = rospy.Subscriber("/map", OccupancyGrid, callback_map)
+	rate = rospy.Rate(20)
+
+
+	while not map_data or position_.z==4:
+		# rospy.loginfo('kk')
+		rate.sleep()
+
 
 	pp_request = PathPlanRequest()
 
@@ -179,14 +166,14 @@ def main():
 	pp_request.start = get_tr_position()
 
 	goal_point = Point()
-	goal_point.x = -16
-	goal_point.y = 16
+	goal_point.x = -8
+	goal_point.y = 13
 	goal_point.z = 0
 	pp_request.goal = goal_point
 
 	pp_request.costmap_ros = map_data
-	pp_request.width = 42
-	pp_request.height = 42
+	pp_request.width = 32
+	pp_request.height = 32
 
 	rospy.wait_for_service('path_plan')
 	try:
@@ -195,6 +182,7 @@ def main():
 		desired_path = resp.plan	
 		rospy.loginfo(desired_path)
 		desired_position_ = desired_path.pop()
+		rospy.loginfo(desired_position_)
 	except rospy.ServiceException as e:
 		print("Service call failed: %s"%e)
 
