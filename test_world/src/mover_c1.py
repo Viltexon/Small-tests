@@ -23,10 +23,7 @@ desired_position_ = Point()
 desired_position2_ = Point()
 yaw_ = 0
 yaw2_ = 0
-# machine state
-# state for each or global state?
-# state_ = 0
-# state2_ = 0
+
 # goal
 
 desired_path = []
@@ -87,16 +84,16 @@ def clbk_odom2(msg):
 
 def get_tr_position():
     tmp_point = Point()
-    tmp_point.x = position2_.x       
-    tmp_point.y = position2_.y
+    tmp_point.x = position_.x       
+    tmp_point.y = position_.y
     tmp_point.z = 0
 
     return tmp_point
 
 def get_tr_position2():
     tmp_point = Point()
-    tmp_point.x = position_.x       
-    tmp_point.y = position_.y
+    tmp_point.x = position2_.x       
+    tmp_point.y = position2_.y
     tmp_point.z = 0
 
     return tmp_point
@@ -186,48 +183,83 @@ def main():
         print("Service call failed: %s"%e)
 
 
-    # while not rospy.is_shutdown() or state_!=2:
+    state_ = 0
+    state2_ = 0
+    while not rospy.is_shutdown() or not state_ or not state2_:
 
-    #     desired_yaw = math.atan2(desired_position_.y - position_.y, desired_position_.x - position_.x)
+        desired_yaw = math.atan2(desired_position_.y - position_.y, desired_position_.x - position_.x)
+        desired_yaw2 = math.atan2(desired_position2_.y - position2_.y, desired_position2_.x - position2_.x)
 
-    #     err_yaw = desired_yaw - yaw_
-    #     twist_msg = Twist()
-    #     # twist_msg.angular.z = 1
-    #     # rospy.loginfo(math.fabs(err_yaw))   
-    #     if math.fabs(err_yaw) > yaw_precision_*2:
+        err_yaw = desired_yaw - yaw_
+        err_yaw2 = desired_yaw2 - yaw2_
 
-    #         if err_yaw > math.pi:
-    #             err_yaw = err_yaw - 2*math.pi
 
-    #         if err_yaw < -math.pi:
-    #             err_yaw = err_yaw + 2*math.pi
+        twist_msg = Twist()
+        twist_msg2 = Twist()
+        if not state_:
+            if math.fabs(err_yaw) > yaw_precision_*2:
 
-    #         twist_msg.linear.x = 0
-    #         # if math.fabs(err_yaw) > yaw_precision_:
-    #         if err_yaw > 0:
-    #             twist_msg.angular.z = -1
-    #         else:
-    #             twist_msg.angular.z = 1
+                if err_yaw > math.pi:
+                    err_yaw = err_yaw - 2*math.pi
 
-    #     else:
-    #         # rospy.loginfo("-------------------------")
-    #         err_pos = math.sqrt(pow(desired_position_.y - position_.y, 2) + pow(desired_position_.x - position_.x, 2))
+                if err_yaw < -math.pi:
+                    err_yaw = err_yaw + 2*math.pi
 
-    #         if err_pos > dist_precision_:
-    #             twist_msg.linear.x = 1
-    #             twist_msg.angular.z = 0
-    #         else:
-    #             if desired_path:
-    #                 desired_position_ = desired_path.pop()
-    #                 rospy.loginfo(desired_position_)
-    #             else:
-    #                 # rospy.loginfo('Position error: [%s]' % err_pos)
-    #                 # change_state(2)
-    #                 break
+                twist_msg.linear.x = 0
 
-    #     # rospy.loginfo(twist_msg)
-    #     pub.publish(twist_msg)
-    #     rate.sleep()
+                if err_yaw > 0:
+                    twist_msg.angular.z = -1
+                else:
+                    twist_msg.angular.z = 1
+
+            else:
+
+                err_pos = math.sqrt(pow(desired_position_.y - position_.y, 2) + pow(desired_position_.x - position_.x, 2))
+
+                if err_pos > dist_precision_:
+                    twist_msg.linear.x = 1
+                    twist_msg.angular.z = 0
+                else:
+                    if desired_path:
+                        desired_position_ = desired_path.pop()
+                        rospy.loginfo(desired_position_)
+                    else:
+                        state_ = 1
+
+        if not state2_:
+            if math.fabs(err_yaw2) > yaw_precision_*2:
+
+                if err_yaw2 > math.pi:
+                    err_yaw2 = err_yaw2 - 2*math.pi
+
+                if err_yaw2 < -math.pi:
+                    err_yaw2 = err_yaw2 + 2*math.pi
+
+                twist_msg2.linear.x = 0
+
+                if err_yaw2 > 0:
+                    twist_msg2.angular.z = -1
+                else:
+                    twist_msg2.angular.z = 1
+
+            else:
+
+                err_pos2 = math.sqrt(pow(desired_position2_.y - position2_.y, 2) + pow(desired_position2_.x - position2_.x, 2))
+
+                if err_pos2 > dist_precision_:
+                    twist_msg2.linear.x = 1
+                    twist_msg2.angular.z = 0
+                else:
+                    if desired_path2:
+                        desired_position2_ = desired_path2.pop()
+                        rospy.loginfo(desired_position2_)
+                    else:
+                        state2_ = 1
+
+        pub.publish(twist_msg)
+        pub2.publish(twist_msg2)
+        rate.sleep()
+
 
 
 if __name__ == '__main__':
