@@ -27,7 +27,7 @@
   <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find test_world)/urdf/robot1/robot.urdf'" />
   
   <arg name="x" default="10"/>
-  <arg name="y" default="-13"/>
+  <arg name="y" default="0"/>
   <arg name="z" default="1.5"/>
   <arg name="yaw" default="-3"/>
 
@@ -38,8 +38,8 @@
 
   <param name="robot_description_2" command="$(find xacro)/xacro --inorder '$(find test_world)/urdf/robot2/robot.urdf'" />
   
-  <arg name="x2" default="2"/>
-  <arg name="y2" default="2"/>
+  <arg name="x2" default="-8"/>
+  <arg name="y2" default="0"/>
   <arg name="z2" default="1.5"/>
   <arg name="yaw2" default="0.5"/>
 

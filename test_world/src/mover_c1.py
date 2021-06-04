@@ -34,7 +34,7 @@ map_data = []
 
 # parameters
 yaw_precision_ = math.pi / 180 # +/- 1 degree allowed
-dist_precision_ = 0.8
+dist_precision_ = 0.1
 
 # publishers
 pub = None
@@ -152,12 +152,16 @@ def main():
     pp_request.start = [start, start2] # tmp
 
     goal_point = Point()
+    # goal_point.x = -8
+    # goal_point.y = 13
     goal_point.x = -8
-    goal_point.y = 13
+    goal_point.y = 0
     goal_point.z = 0
     goal_point2 = Point()
-    goal_point2.x = 4.5
-    goal_point2.y = 9.5
+    # goal_point2.x = 10
+    # goal_point2.y = -13
+    goal_point2.x = 10
+    goal_point2.y = 0
     goal_point2.z = 0
     pp_request.goal = [goal_point, goal_point2] # tmp
 
@@ -222,7 +226,7 @@ def main():
                 else:
                     if desired_path:
                         desired_position_ = desired_path.pop()
-                        rospy.loginfo(desired_position_)
+                        # rospy.loginfo(desired_position_)
                     else:
                         state_ = 1
 
@@ -252,7 +256,7 @@ def main():
                 else:
                     if desired_path2:
                         desired_position2_ = desired_path2.pop()
-                        rospy.loginfo(desired_position2_)
+                        # rospy.loginfo(desired_position2_)
                     else:
                         state2_ = 1
 
@@ -260,6 +264,7 @@ def main():
         pub2.publish(twist_msg2)
         rate.sleep()
 
+    rospy.loginfo("Finish")
 
 
 if __name__ == '__main__':

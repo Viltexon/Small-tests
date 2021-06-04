@@ -35,30 +35,59 @@
   </link>
 
 
-  <link name="caster">
+  <link name="caster1">
     <inertial>
       <mass value="0.2"/>
-      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
-      <xacro:cylinder_inertia mass="0.2" r="0.05" l="0.1" />
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <xacro:cylinder_inertia mass="0.2" r="0.05" l="0.02" />
     </inertial>
-    <collision name="caster_collision">
-      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+    <collision name="caster1_collision">
+      <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.1" radius="0.05"/>
+        <cylinder length="0.02" radius="0.05"/>
       </geometry>
     </collision>
-    <visual name="caster_visual">
-      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+    <visual name="caster1_visual">
+      <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.1" radius="0.05"/>
+        <cylinder length="0.02" radius="0.05"/>
       </geometry>
     </visual>
   </link>
 
-  <joint name="joint_caster" type="continuous">
-    <origin rpy="0 0 0" xyz="0.35 0 -0.05"/>
+  <joint name="joint_caster1" type="continuous">
+    <origin rpy="0 0 0" xyz="0.25 0 -0.05"/>
     <parent link="link_chassis2"/>
-    <child link="caster"/>
+    <child link="caster1"/>
+    <axis rpy="0 0 0" xyz="0 0 1"/>
+    <limit effort="10000" velocity="1000"/>
+    <joint_properties damping="1.0" friction="1.0"/>
+  </joint>
+
+  <link name="caster2">
+    <inertial>
+      <mass value="0.2"/>
+      <origin rpy="0 1.570796 1.570796" xyz="0 0 0"/>
+      <xacro:cylinder_inertia mass="0.2" r="0.04" l="0.03" />
+    </inertial>
+    <collision name="caster2_collision">
+      <origin rpy="0 1.570796 1.570796" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.03" radius="0.04"/>
+      </geometry>
+    </collision>
+    <visual name="caster2_visual">
+      <origin rpy="0 1.570796 1.570796" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.03" radius="0.04"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <joint name="joint_caster2" type="continuous">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="caster1"/>
+    <child link="caster2"/>
     <axis rpy="0 0 0" xyz="0 1 0"/>
     <limit effort="10000" velocity="1000"/>
     <joint_properties damping="1.0" friction="1.0"/>
@@ -102,3 +131,15 @@
   </joint>
 
 </robot>
+
+
+<!-- 
+revolute - a hinge joint that rotates along the axis and has a limited range specified by the upper and lower limits.
+continuous - a continuous hinge joint that rotates around the axis and has no upper and lower limits.
+prismatic - a sliding joint that slides along the axis, and has a limited range specified by the upper and lower limits.
+fixed - This is not really a joint because it cannot move. All degrees of freedom are locked. This type of joint does not require the axis, calibration, dynamics, limits or safety_controller.
+floating - This joint allows motion for all 6 degrees of freedom.
+planar - This joint allows motion in a plane perpendicular to the axis.
+
+ -->
+ 

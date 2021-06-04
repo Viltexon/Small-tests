@@ -4,7 +4,7 @@ import rospy
 from test_world.srv import *
 from test_world.msg import *
 from geometry_msgs.msg import Point
-# from A_star import *
+from A_star import *
 
 
 # TODO width&height
@@ -40,16 +40,24 @@ def handle_path_plan(req):
 
 	rospy.loginfo(map_matr)
 
-	# start_index = []
-	# start_index.append(tr_x_to(req.start.x, req.width))
-	# start_index.append(tr_y_to(req.start.y, req.height)) 
+	start_index1 = []
+	start_index1.append(tr_x_to(req.start[0].x, req.width))
+	start_index1.append(tr_y_to(req.start[0].y, req.height))
+
+	start_index2 = []
+	start_index2.append(tr_x_to(req.start[1].x, req.width))
+	start_index2.append(tr_y_to(req.start[1].y, req.height))  
 	
 	# rospy.loginfo(start_index)
 
 
-	# goal_index = []
-	# goal_index.append(tr_x_to(req.goal.x, req.width)) 
-	# goal_index.append(tr_y_to(req.goal.y, req.height)) 
+	goal_index1 = []
+	goal_index1.append(tr_x_to(req.goal[0].x, req.width)) 
+	goal_index1.append(tr_y_to(req.goal[0].y, req.height))
+
+	goal_index2 = []
+	goal_index2.append(tr_x_to(req.goal[1].x, req.width)) 
+	goal_index2.append(tr_y_to(req.goal[1].y, req.height))  
 	
 	# rospy.loginfo(goal_index)
 	rospy.loginfo("handle_path_plan +++++++++++++++++")
@@ -69,36 +77,68 @@ def handle_path_plan(req):
 	# path = []
 	# path.append(goal_point)
 
-	# for p_point in tmp_path:
-	# 	tmp_desired_position = Point()
-	# 	tmp_desired_position.x = tr_x_from(p_point[0], req.width)
-	# 	tmp_desired_position.y = tr_y_from(p_point[1], req.height)
-	# 	tmp_desired_position.z = 0
-	# 	path.append(tmp_desired_position)
 
+	tmp_path1 = A_star(map_matr, start_index1, goal_index1, resolution)
 
 	path1 = PathArray()
 	path1.path.append(goal_point)
-	tmp_desired_position = Point()
-	tmp_desired_position.x = 7
-	tmp_desired_position.y = 10
-	tmp_desired_position.z = 0
-	path1.path.append(tmp_desired_position)
-	tmp_desired_position = Point()
-	tmp_desired_position.x = -7
-	tmp_desired_position.y = -3
-	tmp_desired_position.z = 0
-	path1.path.append(tmp_desired_position)
 
+	for p_point in tmp_path1:
+		tmp_desired_position = Point()
+		tmp_desired_position.x = tr_x_from(p_point[0], req.width)
+		tmp_desired_position.y = tr_y_from(p_point[1], req.height)
+		tmp_desired_position.z = 0
+		path1.path.append(tmp_desired_position)
 
- 
+	tmp_path2 = A_star(map_matr, start_index2, goal_index2, resolution)
+
 	path2 = PathArray()
 	path2.path.append(goal_point2)
-	tmp_desired_position = Point()
-	tmp_desired_position.x = 4
-	tmp_desired_position.y = 4
-	tmp_desired_position.z = 0
-	path2.path.append(tmp_desired_position)
+
+	for p_point in tmp_path2:
+		tmp_desired_position = Point()
+		tmp_desired_position.x = tr_x_from(p_point[0], req.width)
+		tmp_desired_position.y = tr_y_from(p_point[1], req.height)
+		tmp_desired_position.z = 0
+		path2.path.append(tmp_desired_position)
+
+
+	tmp_i1 = 0
+	for r1_point in tmp_path1:
+		tmp_i2 = 0
+		for r2_point in tmp_path2:
+			if r1_point==r2_point and tmp_i1==tmp_i2:
+				rospy.loginfo("AAAAAAAAAAAAAAAAAAAAAAAAAA")
+				rospy.loginfo(r1_point)
+				rospy.loginfo(tr_x_from(r1_point[0], req.width))
+				rospy.loginfo(tr_y_from(r1_point[1], req.height))
+				rospy.loginfo(tmp_i1)
+				rospy.loginfo("AAAAAAAAAAAAAAAAAAAAAAAAAA")
+
+			tmp_i2 = tmp_i2+1
+		tmp_i1 = tmp_i1+1
+
+
+	# path1 = PathArray()
+	# path1.path.append(goal_point)
+	# tmp_desired_position = Point()
+	# tmp_desired_position.x = 7
+	# tmp_desired_position.y = 10
+	# tmp_desired_position.z = 0
+	# path1.path.append(tmp_desired_position)
+	# tmp_desired_position = Point()
+	# tmp_desired_position.x = -7
+	# tmp_desired_position.y = -3
+	# tmp_desired_position.z = 0
+	# path1.path.append(tmp_desired_position)
+ 
+	# path2 = PathArray()
+	# path2.path.append(goal_point2)
+	# tmp_desired_position = Point()
+	# tmp_desired_position.x = 4
+	# tmp_desired_position.y = 4
+	# tmp_desired_position.z = 0
+	# path2.path.append(tmp_desired_position)
 
 	Plan_array = [path1, path2]
 
