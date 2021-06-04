@@ -23,8 +23,8 @@
         </surface> -->
         <geometry>
           <heightmap>
-            <uri>model://map1/materials/map2.pgm</uri>
-            <size>32 32 4</size>
+            <uri>model://map1/materials/map1.png</uri>
+            <size>33 33 4</size>
             <pos>0 0 0</pos>
           </heightmap>
         </geometry>
@@ -38,8 +38,8 @@
               <normal>file://media/materials/textures/flat_normal.png</normal>
               <size>2</size>
             </texture> 
-            <uri>model://map1/materials/map2.pgm</uri>
-            <size>32 32 4</size>
+            <uri>model://map1/materials/map1.png</uri>
+            <size>33 33 4</size>
             <pos>0 0 0</pos>
           </heightmap>
         </geometry>

@@ -6,7 +6,6 @@ from geometry_msgs.msg import Twist, Point
 from nav_msgs.msg import Odometry
 from tf import transformations
 from nav_msgs.msg import OccupancyGrid
-from sensor_msgs.msg import LaserScan
 
 import math
 
@@ -30,7 +29,7 @@ map_data = []
 
 # parameters
 yaw_precision_ = math.pi / 180 # +/- 1 degree allowed
-dist_precision_ = 0.8
+dist_precision_ = 0.2
 
 # publishers
 pub = None
@@ -131,8 +130,10 @@ def main():
 	pp_request.goal = goal_point
 
 	pp_request.costmap_ros = map_data
-	pp_request.width = 32
-	pp_request.height = 32
+	# TODO width&height
+	# TODO diagonal obstacles
+	pp_request.width = 33
+	pp_request.height = 33
 
 	rospy.wait_for_service('path_plan')
 	try:
