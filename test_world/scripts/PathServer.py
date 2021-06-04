@@ -46,8 +46,6 @@ def handle_path_plan(req):
 
 	# side of each grid map square in meters
 	resolution = 1
-	# origin of grid map
-	origin = [-7.4, -7.4, 0]
 
 	# time statistics
 	start_time = rospy.Time.now()

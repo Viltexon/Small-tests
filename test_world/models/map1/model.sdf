@@ -5,7 +5,7 @@
     <static>true</static>
     <link name="link">
       <collision name="collision">
-        <surface>
+        <!-- <surface>
           <friction>
             <ode>
               <mu>0.35</mu>
@@ -20,7 +20,7 @@
               <min_depth>0.02</min_depth>
             </ode>
           </contact>
-        </surface>
+        </surface> -->
         <geometry>
           <heightmap>
             <uri>model://map1/materials/map2.pgm</uri>

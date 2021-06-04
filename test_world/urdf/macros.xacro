@@ -4,19 +4,19 @@
         <link name="${name}">
             <inertial>
               <mass value="0.2"/>
-              <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
-              <inertia ixx="0.000526666666667" ixy="0" ixz="0" iyy="0.000526666666667" iyz="0" izz="0.001"/>
+              <origin rpy="0 1.570796 1.570796" xyz="0 0 0"/>
+              <xacro:cylinder_inertia mass="0.2" l="0.03" r="0.1" />
             </inertial>
             <collision name="${name}_collision">
-              <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+              <origin rpy="0 1.570796 1.570796" xyz="0 0 0"/>
               <geometry>
-                <cylinder length="0.04" radius="0.1"/>
+                <cylinder length="0.03" radius="0.1"/>
               </geometry>
             </collision>
             <visual name="${name}_visual">
-              <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+              <origin rpy="0 1.570796 1.570796" xyz="0 0 0"/>
               <geometry>
-                <cylinder length="0.04" radius="0.1"/>
+                <cylinder length="0.03" radius="0.1"/>
               </geometry>
             </visual>
         </link>

@@ -143,7 +143,8 @@ def A_star(costmap, start_index, goal_index, resolution):
 		for node in closedList:
 			if node[0]==tmp:
 				tmp=node[3]
-				path.append([tmp[0], tmp[1]])
+				if tmp!=start_index:
+					path.append([tmp[0], tmp[1]])
 				break
 
 	return path

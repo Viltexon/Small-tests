@@ -6,6 +6,7 @@ from geometry_msgs.msg import Twist, Point
 from nav_msgs.msg import Odometry
 from tf import transformations
 from nav_msgs.msg import OccupancyGrid
+from sensor_msgs.msg import LaserScan
 
 import math
 
@@ -33,69 +34,6 @@ dist_precision_ = 0.8
 
 # publishers
 pub = None
-
-
-
-def fix_yaw(des_pos):
-	global yaw_, pub, yaw_precision_, state_
-
-	desired_yaw = math.atan2(des_pos.y - position_.y, des_pos.x - position_.x)
-
-	err_yaw = desired_yaw - yaw_
-
-	if err_yaw > math.pi:
-		err_yaw = err_yaw - 2*math.pi
-
-	if err_yaw < -math.pi:
-		err_yaw = err_yaw + 2*math.pi
-	
-	# rospy.loginfo(err_yaw)
-
-	twist_msg = Twist()
-	if math.fabs(err_yaw) > yaw_precision_:
-		if err_yaw > 0:
-			twist_msg.angular.z = -1
-		else:
-			twist_msg.angular.z = 1
-	
-	pub.publish(twist_msg)
-	
-	# state change conditions
-	if math.fabs(err_yaw) <= yaw_precision_:
-		# rospy.loginfo('Yaw error: [%s]' % err_yaw)
-		change_state(1)
-
-
-def go_straight_ahead(des_pos):
-	global yaw_, pub, yaw_precision_, state_, desired_position_, desired_path
-	desired_yaw = math.atan2(des_pos.y - position_.y, des_pos.x - position_.x)
-	err_yaw = desired_yaw - yaw_
-	err_pos = math.sqrt(pow(des_pos.y - position_.y, 2) + pow(des_pos.x - position_.x, 2))
-
-	if err_pos > dist_precision_:
-		twist_msg = Twist()
-		twist_msg.linear.x = 1
-		pub.publish(twist_msg)
-	else:
-		if desired_path:
-			desired_position_ = desired_path.pop()
-			rospy.loginfo(desired_position_)
-			change_state(0)
-		else:
-			# rospy.loginfo('Position error: [%s]' % err_pos)
-			change_state(2)
-
-	# state change conditions
-	if math.fabs(err_yaw) > yaw_precision_*10:	# main TODO bruh moment
-		# rospy.loginfo('Yaw error: [%s]' % err_yaw)
-		change_state(0)
-
-
-def done():
-	twist_msg = Twist()
-	twist_msg.linear.x = 0
-	twist_msg.angular.z = 0
-	pub.publish(twist_msg)
 
 
 
@@ -137,9 +75,29 @@ def callback_map(msg):
 
 
 
+def clbk_laser(msg):
+	# 720 / 5 = 144
+	# regions = [
+	#     min(min(msg.ranges[0:143]), 10),
+	#     min(min(msg.ranges[144:287]), 10),
+	#     min(min(msg.ranges[288:431]), 10),
+	#     min(min(msg.ranges[432:575]), 10),
+	#     min(min(msg.ranges[576:713]), 10),
+	# ]
+	# rospy.loginfo(regions)
+
+	if min(min(msg.ranges[288:431]), 10) < 0.5:
+		rospy.loginfo("---------------------")
+		rospy.loginfo(min(min(msg.ranges[288:431]), 10))
+		rospy.loginfo(position_)
+		rospy.loginfo(yaw_)
+
+	# if min(min(msg.ranges[288:431]), 10) < 0.5 and tmp_yaw==yaw_ and tmp_pos==position_:
+
 
 def main():
 	global pub, desired_path, desired_position_
+	global yaw_, yaw_precision_, state_
 
 	rospy.init_node('mover')
 
@@ -147,6 +105,7 @@ def main():
 
 	sub_odom = rospy.Subscriber('/odom', Odometry, clbk_odom)
 	sub_map = rospy.Subscriber("/map", OccupancyGrid, callback_map)
+	sub = rospy.Subscriber('/robot/laser/scan', LaserScan, clbk_laser)
 	rate = rospy.Rate(20)
 
 
@@ -186,31 +145,48 @@ def main():
 	except rospy.ServiceException as e:
 		print("Service call failed: %s"%e)
 
-	rate = rospy.Rate(20)
-	while not rospy.is_shutdown():
-		if state_ == 0:
-			tmp_yaw = yaw_
-			fix_yaw(desired_position_)
-			rate.sleep()
-			if abs(yaw_ - tmp_yaw) < 0.001:
-				change_state(1)
-				# twist_msg = Twist()
-				# twist_msg.linear.x = -1
-				# twist_msg.angular.z = 1
-				# pub.publish(twist_msg)
-				# rate.sleep()
-				# twist_msg.linear.x = 0
-				# pub.publish(twist_msg)
-				# rate.sleep()
 
-		elif state_ == 1:
-			go_straight_ahead(desired_position_)
-		elif state_ == 2:
-			done()
-			pass
+	while not rospy.is_shutdown() or state_!=2:
+
+		desired_yaw = math.atan2(desired_position_.y - position_.y, desired_position_.x - position_.x)
+
+		err_yaw = desired_yaw - yaw_
+		twist_msg = Twist()
+		# twist_msg.angular.z = 1
+		# rospy.loginfo(math.fabs(err_yaw))   
+		if math.fabs(err_yaw) > yaw_precision_*2:
+
+			if err_yaw > math.pi:
+				err_yaw = err_yaw - 2*math.pi
+
+			if err_yaw < -math.pi:
+				err_yaw = err_yaw + 2*math.pi
+
+			twist_msg.linear.x = 0
+			# if math.fabs(err_yaw) > yaw_precision_:
+			if err_yaw > 0:
+				twist_msg.angular.z = -1
+			else:
+				twist_msg.angular.z = 1
+
 		else:
-			rospy.logerr('Unknown state!')
-			pass
+			# rospy.loginfo("-------------------------")
+			err_pos = math.sqrt(pow(desired_position_.y - position_.y, 2) + pow(desired_position_.x - position_.x, 2))
+
+			if err_pos > dist_precision_:
+				twist_msg.linear.x = 1
+				twist_msg.angular.z = 0
+			else:
+				if desired_path:
+					desired_position_ = desired_path.pop()
+					rospy.loginfo(desired_position_)
+					# change_state(0)
+				else:
+					# rospy.loginfo('Position error: [%s]' % err_pos)
+					change_state(2)
+
+		# rospy.loginfo(twist_msg)
+		pub.publish(twist_msg)
 		rate.sleep()
 
 
