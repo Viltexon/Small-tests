@@ -36,7 +36,7 @@ def handle_path_plan(req):
 	map_matr_tmp = [req.costmap_ros[i:i+req.width] for i in range(0, len(req.costmap_ros), req.width)]
 	map_matr = []
 	for i in range(len(map_matr_tmp)):
-		map_matr.append(map_matr_tmp.pop())
+		map_matr.append(list(map_matr_tmp.pop()))
 
 	rospy.loginfo(map_matr)
 
@@ -104,14 +104,20 @@ def handle_path_plan(req):
 
 
 	tmp_i1 = 0
+	cr_point = []
 	for r1_point in tmp_path1:
 		tmp_i2 = 0
 		for r2_point in tmp_path2:
-			if r1_point==r2_point and tmp_i1==tmp_i2:
+			# if r1_point==r2_point and tmp_i1==tmp_i2:
+			if r1_point==r2_point and abs(tmp_i1-tmp_i2)<3:
 				rospy.loginfo("AAAAAAAAAAAAAAAAAAAAAAAAAA")
 				rospy.loginfo(r1_point)
 				rospy.loginfo(tr_x_from(r1_point[0], req.width))
 				rospy.loginfo(tr_y_from(r1_point[1], req.height))
+				# rospy.loginfo(map_matr[r1_point[0]][r1_point[1]])
+				# cr_point = [r1_point[0], r1_point[1]]
+
+				cr_point.append([r1_point[0], r1_point[1]])
 				rospy.loginfo(tmp_i1)
 				rospy.loginfo("AAAAAAAAAAAAAAAAAAAAAAAAAA")
 
@@ -119,26 +125,27 @@ def handle_path_plan(req):
 		tmp_i1 = tmp_i1+1
 
 
-	# path1 = PathArray()
-	# path1.path.append(goal_point)
-	# tmp_desired_position = Point()
-	# tmp_desired_position.x = 7
-	# tmp_desired_position.y = 10
-	# tmp_desired_position.z = 0
-	# path1.path.append(tmp_desired_position)
-	# tmp_desired_position = Point()
-	# tmp_desired_position.x = -7
-	# tmp_desired_position.y = -3
-	# tmp_desired_position.z = 0
-	# path1.path.append(tmp_desired_position)
- 
-	# path2 = PathArray()
-	# path2.path.append(goal_point2)
-	# tmp_desired_position = Point()
-	# tmp_desired_position.x = 4
-	# tmp_desired_position.y = 4
-	# tmp_desired_position.z = 0
-	# path2.path.append(tmp_desired_position)
+	# change map if cr_point
+	if cr_point:
+		# inverted????
+		# map_matr[cr_point[1]][cr_point[0]] = 95
+
+		for i_cr_point in cr_point:
+			map_matr[i_cr_point[1]][i_cr_point[0]] = 95
+
+		tmp_path3 = A_star(map_matr, start_index2, goal_index2, resolution)
+		rospy.loginfo("tmp_path3")
+		rospy.loginfo(tmp_path3)
+
+		path2 = PathArray()
+		path2.path.append(goal_point2)
+
+		for p_point in tmp_path3:
+			tmp_desired_position = Point()
+			tmp_desired_position.x = tr_x_from(p_point[0], req.width)
+			tmp_desired_position.y = tr_y_from(p_point[1], req.height)
+			tmp_desired_position.z = 0
+			path2.path.append(tmp_desired_position)
 
 	Plan_array = [path1, path2]
 

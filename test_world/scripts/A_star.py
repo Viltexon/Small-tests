@@ -21,6 +21,7 @@ def generate_n(costmap, node_ind, node_g, goal_ind):
 
 	n_list = []
 
+	# why is costmap[tmp_ind[1]][tmp_ind[0]] inverted lol?
 	tmp_ind = [0, 0]
 	tmp_ind[0] = node_ind[0]+1
 	tmp_ind[1] = node_ind[1]
